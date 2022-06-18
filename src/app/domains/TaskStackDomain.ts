@@ -1,22 +1,16 @@
+import { TaskRepository } from "../repositories/TaskRepository";
 import { ObservableValue } from "../../lib/ObservableValue";
-import { Task } from "../models/Task";
-import { Event } from "../models/Event";
+import { TaskItemDomain, TaskItemDomainPort } from "./TaskItemDomain";
+import { ActiveTaskDomain, ActiveTaskDomainPort } from "./ActiveTaskDomain";
+import { TaskFormDomain, TaskFormDomainPort } from "./TaskFormDomain";
 
-export class TaskStackDomain {
-  tasks = new ObservableValue<Task[]>([]);
-  timerIsRunning = new ObservableValue<boolean>(false);
+export class TaskStackDomain
+  implements TaskItemDomainPort, ActiveTaskDomainPort, TaskFormDomainPort {
+  taskRepository: TaskRepository;
+  taskItemDomains = new ObservableValue<TaskItemDomain[]>([]);
+  activeTaskDomain = new ObservableValue<ActiveTaskDomain | null>(null);
 
-  events: Event[] = [];
-
-  pushTask(task: Task) {
-    const taskList = this.tasks.getValue();
-    taskList.push(task);
-    this.tasks.setValue(taskList);
-  }
-
-  addTaskToTop(task: Task) {
-    const taskList = this.tasks.getValue();
-    taskList.unshift(task);
-    this.tasks.setValue(taskList);
+  constructor(taskRepository: TaskRepository) {
+    this.taskRepository = taskRepository;
   }
 }

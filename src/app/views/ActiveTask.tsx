@@ -1,7 +1,6 @@
 import React from "react";
 import { ObservableValue } from "../../lib/ObservableValue";
 import { useAsyncValue } from "../../lib/useAsyncValue";
-import { Task } from "../models/Task";
 
 const styles: Record<string, React.CSSProperties> = {
   activeTask: {
