@@ -4,7 +4,7 @@ import { TaskItemViewPort } from "../views/TaskItem";
 export interface TaskItemDomainPort {
   reorderTaskUp(task: Task): void;
   reorderTaskDown(task: Task): void;
-  activeTask(task: Task): void;
+  activateTask(task: Task): void;
 }
 
 export class TaskItemDomain implements TaskItemViewPort {
@@ -25,6 +25,6 @@ export class TaskItemDomain implements TaskItemViewPort {
   }
 
   handleActivate() {
-    this.adapter.activeTask(this.task);
+    this.adapter.activateTask(this.task);
   }
 }

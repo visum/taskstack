@@ -9,8 +9,6 @@ export interface ActiveTaskDomainPort {
   updateTask(task: Task, newValues: Task): void;
   completeTask(task: Task);
   startTimer(): void;
-  tasks: Task[];
-  events: Event[];
 }
 
 export class ActiveTaskDomain implements ActiveTaskViewPort {
@@ -22,10 +20,10 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
   timerIsRunning = new ObservableValue<boolean>(false);
 
   task: Task;
-  adapter: ActiveTaskPort;
+  adapter: ActiveTaskDomainPort;
   startTime = 0;
 
-  constructor(task: Task, adapter: ActiveTaskPort) {
+  constructor(task: Task, adapter: ActiveTaskDomainPort) {
     // make a copy to avoid pollution
     this.task = { ...task };
     this.adapter = adapter;
