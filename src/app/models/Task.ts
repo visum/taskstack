@@ -3,4 +3,5 @@ export class Task {
   name: string;
   link: string;
   totalTime: number;
+  isComplete: boolean;
 }

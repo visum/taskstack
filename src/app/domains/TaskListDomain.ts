@@ -5,7 +5,7 @@ import { TaskListViewPort } from "../views/TaskList";
 import { TaskItemDomain, TaskItemDomainPort } from "./TaskItemDomain";
 
 export class TaskListDomain implements TaskListViewPort {
-  tasks: ObservableValue<TaskItemViewPort[]>;
+  tasks = new ObservableValue<TaskItemViewPort[]>([]);
 
   constructor(tasks: Task[], adapter: TaskItemDomainPort) {
     const domains = tasks.map((task) => new TaskItemDomain(task, adapter));
