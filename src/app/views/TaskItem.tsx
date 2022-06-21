@@ -31,7 +31,8 @@ export function TaskItem({
     <div style={{ ...styles.taskItem, ...style }}>
       <div style={styles.leftSide}>
         Name: {adapter.task.name}
-        Link:{" "}
+        <br />
+        Link:
         <a href={adapter.task.link} target="_blank" rel="noreferrer">
           {adapter.task.link}
         </a>

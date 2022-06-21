@@ -4,7 +4,9 @@ import { useAsyncValue } from "../../lib/useAsyncValue";
 
 const styles: Record<string, React.CSSProperties> = {
   activeTask: {
-    display: "flex"
+    display: "flex",
+    border: "1px solid black",
+    padding: "5px"
   },
   leftSide: {
     flex: "2 2 auto"
