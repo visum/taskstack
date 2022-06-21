@@ -7,7 +7,7 @@ const SECONDS_IN_HOUR = 3600;
 
 export interface ActiveTaskDomainPort {
   updateTask(task: Task, newValues: Task): void;
-  completeTask(task: Task);
+  completeTask(task: Task): void;
   startTimer(): void;
 }
 

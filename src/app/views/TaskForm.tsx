@@ -12,6 +12,7 @@ const styles: Record<string, React.CSSProperties> = {
 export interface TaskFormViewPort {
   name: ObservableValue<string>;
   link: ObservableValue<string>;
+  isValid: ObservableValue<boolean>;
   handleNameChange: (value: string) => void;
   handleLinkChange: (value: string) => void;
   handleAdd: (position: "top" | "next" | "now") => void;
@@ -26,6 +27,7 @@ export function TaskForm({
 }) {
   const name = useAsyncValue(adapter.name);
   const link = useAsyncValue(adapter.link);
+  const isValid = useAsyncValue(adapter.isValid);
 
   return (
     <div style={{ ...styles.taskForm, ...style }}>
@@ -45,9 +47,9 @@ export function TaskForm({
           onChange={(event) => adapter.handleLinkChange(event.target.value)}
         />
       </label>
-      <button onClick={() => adapter.handleAdd("top")}>Top</button>
-      <button onClick={() => adapter.handleAdd("next")}>Next</button>
-      <button onClick={() => adapter.handleAdd("now")}>Now</button>
+      <button onClick={() => adapter.handleAdd("top")} disabled={!isValid}>Top</button>
+      <button onClick={() => adapter.handleAdd("next")}  disabled={!isValid}>Next</button>
+      <button onClick={() => adapter.handleAdd("now")} disabled={!isValid}>Now</button>
     </div>
   );
 }

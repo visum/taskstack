@@ -2,11 +2,11 @@ import { ActiveTaskViewPort } from "../views/ActiveTask";
 import { TaskFormViewPort } from "../views/TaskForm";
 import { TaskListViewPort } from "../views/TaskList";
 import { ToDoTabViewPort } from "../views/ToDoTab";
-import { TaskItemDomainPort } from "./TaskItemDomain";
 
 import { TaskListDomain } from "./TaskListDomain";
 import { ActiveTaskDomain, ActiveTaskDomainPort } from "./ActiveTaskDomain";
 import { TaskFormDomain, TaskFormDomainPort } from "./TaskFormDomain";
+import { TaskItemDomainPort } from "./TaskItemDomain";
 
 import { Task } from "../models/Task";
 import { Event, EventType } from "../models/Event";
@@ -14,7 +14,7 @@ import { ObservableValue } from "../../lib/ObservableValue";
 
 export interface ToDoTabDomainPort {
   getTasks(): Promise<Task[]>;
-  addTask(task: Task, position: "top" | "next" | "now");
+  addTask(task: Task, position: "top" | "next" | "now"): Promise<Task>;
   reorderTask(task: Task, direction: "up" | "down"): Promise<void>;
   activateTask(task: Task): Promise<void>;
   updateTask(task: Task, newValues: Task): Promise<void>;
@@ -25,29 +25,36 @@ export interface ToDoTabDomainPort {
 export class ToDoTabDomain
   implements
     ToDoTabViewPort,
-    TaskItemDomainPort,
     ActiveTaskDomainPort,
-    TaskFormDomainPort {
+    TaskFormDomainPort,
+    TaskItemDomainPort
+{
   adapter: ToDoTabDomainPort;
-  taskListDomain: ObservableValue<TaskListViewPort>;
+  // taskListDomain: ObservableValue<TaskListViewPort>;
+  taskListDomain: TaskListViewPort;
   activeTaskDomain = new ObservableValue<ActiveTaskViewPort | null>(null);
   taskFormDomain = new ObservableValue<TaskFormViewPort | null>(null);
   activeTask: Task | null = null;
 
   constructor(adapter: ToDoTabDomainPort) {
     this.adapter = adapter;
-    this.taskListDomain = new ObservableValue(new TaskListDomain([], this));
+    this.taskListDomain = new TaskListDomain([], this);
     this.taskFormDomain.setValue(new TaskFormDomain(this));
     this.updateTaskList();
+
+    this.activeTaskDomain.onChange(() => {
+      console.log("Got a new value for activeTaskDomain!");
+    });
   }
 
   private async updateTaskList() {
-    const tasks = await this.adapter.getTasks();
-    const activeItem = tasks[0];
+    const tasks = [...(await this.adapter.getTasks())];
+    const activeItem = tasks.pop();
     if (activeItem) {
       this.activeTask = activeItem;
       this.activeTaskDomain.setValue(new ActiveTaskDomain(activeItem, this));
     }
+    this.taskListDomain.updateList(tasks);
   }
 
   // ActiveTaskDomainPort
@@ -68,7 +75,7 @@ export class ToDoTabDomain
     const event: Event = {
       type: EventType.START,
       time: Date.now(),
-      taskId: this.activeTask.id
+      taskId: this.activeTask.id,
     };
     this.adapter.addEvent(event);
   }

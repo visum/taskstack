@@ -6,7 +6,7 @@ import { TaskForm, TaskFormViewPort } from "./TaskForm";
 import { TaskList, TaskListViewPort } from "./TaskList";
 
 export interface ToDoTabViewPort {
-  taskListDomain: ObservableValue<TaskListViewPort>;
+  taskListDomain: TaskListViewPort;
   activeTaskDomain: ObservableValue<ActiveTaskViewPort | null>;
   taskFormDomain: ObservableValue<TaskFormViewPort | null>;
 }
@@ -18,7 +18,8 @@ export function ToDoTab({
   adapter: ToDoTabViewPort;
   style?: React.CSSProperties;
 }) {
-  const taskListDomain = useAsyncValue(adapter.taskListDomain);
+  // const taskListDomain = useAsyncValue(adapter.taskListDomain);
+  const taskListDomain = adapter.taskListDomain;
   const activeTaskDomain = useAsyncValue(adapter.activeTaskDomain);
   const taskFormDomain = useAsyncValue(adapter.taskFormDomain);
 

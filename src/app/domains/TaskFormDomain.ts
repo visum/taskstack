@@ -11,12 +11,14 @@ export class TaskFormDomain implements TaskFormViewPort {
 
   name: ObservableValue<string> = new ObservableValue("");
   link: ObservableValue<string> = new ObservableValue("");
+  isValid: ObservableValue<boolean> = new ObservableValue(false);
 
   constructor(adapter: TaskFormDomainPort) {
     this.adapter = adapter;
   }
 
   handleNameChange(value: string) {
+    this.isValid.setValue(value !== "");
     this.name.setValue(value);
   }
 

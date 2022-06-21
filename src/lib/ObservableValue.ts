@@ -27,9 +27,10 @@ export class ObservableValue<T> {
     this._value = initialValue;
   }
 
-  onChange(handler: (newValue: T) => void) {
+  onChange(handler: (newValue: T) => void): Observer<T> {
     const observer = new Observer(handler, this);
     this._observers.push(observer);
+    return observer;
   }
 
   unsubscribe(observer: Observer<T>) {

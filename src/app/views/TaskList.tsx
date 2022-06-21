@@ -2,6 +2,7 @@ import React from "react";
 import { ObservableValue } from "../../lib/ObservableValue";
 import { useAsyncValue } from "../../lib/useAsyncValue";
 import { TaskItemViewPort, TaskItem } from "./TaskItem";
+import {Task} from "../models/Task";
 
 const styles: Record<string, React.CSSProperties> = {
   taskList: {
@@ -12,6 +13,7 @@ const styles: Record<string, React.CSSProperties> = {
 
 export interface TaskListViewPort {
   tasks: ObservableValue<TaskItemViewPort[]>;
+  updateList(tasks:Task[]):void;
 }
 
 export function TaskList({
