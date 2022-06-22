@@ -1,6 +1,5 @@
-import { ObservableValue } from "../../lib/ObservableValue";
 import { Task } from "../models/Task";
-import { TaskItemViewPort } from "./TaskItem";
+import { TaskItemViewPort } from "../views/TaskItem";
 
 export interface TaskItemDomainPort {
   reorderTaskUp(task: Task): void;
@@ -11,12 +10,10 @@ export interface TaskItemDomainPort {
 export class TaskItemDomain implements TaskItemViewPort {
   task: Task;
   adapter: TaskItemDomainPort;
-  time: ObservableValue<string>;
 
   constructor(task: Task, adapter: TaskItemDomainPort) {
     this.task = { ...task };
     this.adapter = adapter;
-    this.time = new ObservableValue(Task.formatTime(this.task.totalTime));
   }
 
   handleReorderUp() {

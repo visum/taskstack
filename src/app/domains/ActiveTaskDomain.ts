@@ -1,8 +1,9 @@
 import { ObservableValue } from "../../lib/ObservableValue";
 import { Task } from "../models/Task";
-import { ActiveTaskViewPort } from "./ActiveTask";
+import { ActiveTaskViewPort } from "../views/ActiveTask";
 
-
+const SECONDS_IN_DAY = 86400;
+const SECONDS_IN_HOUR = 3600;
 
 export interface ActiveTaskDomainPort {
   updateTask(task: Task, newValues: Task): void;
@@ -18,10 +19,9 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
   time = new ObservableValue<string>("00:00:00:00");
   timerIsRunning = new ObservableValue<boolean>(false);
 
-  private task: Task;
-  private adapter: ActiveTaskDomainPort;
-  private startTime = 0;
-  private timerUpdateInterval = -1;
+  task: Task;
+  adapter: ActiveTaskDomainPort;
+  startTime = 0;
 
   constructor(task: Task, adapter: ActiveTaskDomainPort) {
     // make a copy to avoid pollution
@@ -30,9 +30,39 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
 
     this.name.setValue(task.name);
     this.link.setValue(task.link);
-    this.time.setValue(Task.formatTime(task.totalTime));
+    this.time.setValue(this.formatTime());
   }
 
+  private formatTime() {
+    const time = Math.floor(this.task.totalTime / 1000);
+
+    const days = Math.floor(time / SECONDS_IN_DAY);
+    const secondsAfterDays = time - days * SECONDS_IN_DAY;
+    const hours = Math.floor(secondsAfterDays / SECONDS_IN_HOUR);
+    const secondsAfterHours = secondsAfterDays - hours * SECONDS_IN_HOUR;
+    const minutes = Math.floor(secondsAfterHours / 60);
+    const secondsAfterMinutes = minutes - minutes * 60;
+
+    return `${this.padStart(days, 2, "0")}:${this.padStart(
+      hours,
+      2,
+      "0"
+    )}:${this.padStart(minutes, 2, "0")}:${this.padStart(
+      secondsAfterMinutes,
+      2,
+      "0"
+    )}`;
+  }
+
+  private padStart(input: number, length: number, char: string = "0") {
+    const s = String(input);
+    const diff = length - s.length;
+    if (diff > 0) {
+      const pad = new Array(diff).fill(char).join("");
+      return pad + s;
+    }
+    return s;
+  }
 
   handleComplete() {
     this.adapter.completeTask(this.task);
@@ -42,23 +72,14 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
     this.startTime = Date.now();
     this.timerIsRunning.setValue(true);
     this.adapter.startTimer();
-    this.timerUpdateInterval = window.setInterval(() => {
-      this.updateTimer();
-    }, 1000);
-  }
-
-  private updateTimer() {
-    const elapsed = Date.now() - this.startTime;
-    this.time.setValue(Task.formatTime(this.task.totalTime + elapsed));
   }
 
   handleTimerStop() {
     const elapsed = Date.now() - this.startTime;
     this.task.totalTime += elapsed;
     this.timerIsRunning.setValue(false);
-    this.time.setValue(Task.formatTime(this.task.totalTime));
     this.adapter.updateTask(this.task, this.task);
-    window.clearInterval(this.timerUpdateInterval);
+    this.time.setValue(this.formatTime());
   }
 
   handleUpdateLink: () => void;

@@ -25,8 +25,8 @@ export function ToDoTab({
 
   return (
     <div style={{ ...style }}>
-      {activeTaskDomain && <ActiveTask adapter={activeTaskDomain} />}
       <TaskList adapter={taskListDomain} />
+      {activeTaskDomain && <ActiveTask adapter={activeTaskDomain} />}
       {taskFormDomain && <TaskForm adapter={taskFormDomain} />}
     </div>
   );

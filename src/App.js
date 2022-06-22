@@ -3,7 +3,7 @@ import { ToDoTab } from "./app/views/ToDoTab";
 import { InMemoryTaskRepository } from "./app/repositories/inMemory/InMemoryTaskRepository";
 import { InMemoryEventRepository } from "./app/repositories/inMemory/InMemoryEventRepository";
 import { TaskStackDomain } from "./app/domains/TaskStackDomain";
-import { ToDoTabDomain } from "./app/views/ToDoTabDomain";
+import { ToDoTabDomain } from "./app/domains/ToDoTabDomain";
 
 import "./styles.css";
 

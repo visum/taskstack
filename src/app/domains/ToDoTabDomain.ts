@@ -1,20 +1,20 @@
-import { ActiveTaskViewPort } from "./ActiveTask";
-import { TaskFormViewPort } from "./TaskForm";
-import { TaskListViewPort } from "./TaskList";
-import { ToDoTabViewPort } from "./ToDoTab";
+import { ActiveTaskViewPort } from "../views/ActiveTask";
+import { TaskFormViewPort } from "../views/TaskForm";
+import { TaskListViewPort } from "../views/TaskList";
+import { ToDoTabViewPort } from "../views/ToDoTab";
+
 import { TaskListDomain } from "./TaskListDomain";
 import { ActiveTaskDomain, ActiveTaskDomainPort } from "./ActiveTaskDomain";
 import { TaskFormDomain, TaskFormDomainPort } from "./TaskFormDomain";
 import { TaskItemDomainPort } from "./TaskItemDomain";
 
-import { TaskPosition } from "../ports/TaskPosition";
 import { Task } from "../models/Task";
 import { Event, EventType } from "../models/Event";
 import { ObservableValue } from "../../lib/ObservableValue";
 
 export interface ToDoTabDomainPort {
   getTasks(): Promise<Task[]>;
-  addTask(task: Task, position: TaskPosition): Promise<Task>;
+  addTask(task: Task, position: "top" | "next" | "now"): Promise<Task>;
   reorderTask(task: Task, direction: "up" | "down"): Promise<void>;
   activateTask(task: Task): Promise<void>;
   updateTask(task: Task, newValues: Task): Promise<void>;
@@ -41,11 +41,15 @@ export class ToDoTabDomain
     this.taskListDomain = new TaskListDomain([], this);
     this.taskFormDomain.setValue(new TaskFormDomain(this));
     this.updateTaskList();
+
+    this.activeTaskDomain.onChange(() => {
+      console.log("Got a new value for activeTaskDomain!");
+    });
   }
 
   private async updateTaskList() {
     const tasks = [...(await this.adapter.getTasks())];
-    const activeItem = tasks.shift();
+    const activeItem = tasks.pop();
     if (activeItem) {
       this.activeTask = activeItem;
       this.activeTaskDomain.setValue(new ActiveTaskDomain(activeItem, this));
@@ -94,7 +98,7 @@ export class ToDoTabDomain
   }
 
   // TaskFormDomainPort
-  addTask(task: Task, position: "last" | "next" | "now"): void {
+  addTask(task: Task, position: "top" | "next" | "now"): void {
     this.adapter.addTask(task, position).then(() => {
       this.updateTaskList();
     });

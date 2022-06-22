@@ -1,62 +1,59 @@
 import React from "react";
 import { ObservableValue } from "../../lib/ObservableValue";
 import { useAsyncValue } from "../../lib/useAsyncValue";
+import { ToDoTab, ToDoTabViewPort } from "./ToDoTab";
 
 const styles: Record<string, React.CSSProperties> = {
   tabs: {
-    position: "relative",
+    position: "relative"
   },
   buttons: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    height: "30px",
+    height: "30px"
   },
   content: {
     position: "absolute",
     top: "30px",
     left: 0,
     right: 0,
-    bottom: 0,
-  },
+    bottom: 0
+  }
 };
 
-export interface Tab {
-  title: string;
-  getContents: () => React.ReactElement;
-}
-
 export interface TabsViewPort {
-  tabs: ObservableValue<Tab[]>;
-  activeTabIndex: ObservableValue<number>;
-  onTabSelect: (index: number) => void;
+  toDoTabDomain: ObservableValue<ToDoTabViewPort | null>;
+  handleSelectToDo: () => void;
+  handleSelectDone: () => void;
+  handleSelectDay: () => void;
 }
 
 export function Tabs({
   adapter,
-  style = {},
+  style = {}
 }: {
   adapter: TabsViewPort;
   style?: React.CSSProperties;
 }) {
-  const tabs = useAsyncValue(adapter.tabs);
-  const activeTabIndex = useAsyncValue(adapter.activeTabIndex);
+  const toDoTabDomain = useAsyncValue(adapter.toDoTabDomain);
 
   return (
     <div style={{ ...styles.tabs, ...style }}>
       <div style={styles.buttons}>
-        {tabs.map((tab, index) => (
-          <button
-            key={index}
-            onClick={() => adapter.onTabSelect(index)}
-            disabled={index === activeTabIndex}
-          >
-            {tab.title}
-          </button>
-        ))}
+        <button
+          onClick={() => adapter.handleSelectToDo()}
+          disabled={toDoTabDomain != null}
+        >
+          ToDo
+        </button>
+        <button onClick={() => adapter.handleSelectDone()}>Done</button>
+        <button onClick={() => adapter.handleSelectDay()}>Day</button>
       </div>
-      <div style={styles.content}>{tabs[activeTabIndex].getContents()}</div>
+      <div style={styles.content}>
+        {toDoTabDomain && <ToDoTab adapter={toDoTabDomain} />}
+      </div>
     </div>
   );
 }
