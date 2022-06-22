@@ -1,5 +1,6 @@
 import { Task } from "../../models/Task";
 import { TaskRepository } from "../TaskRepository";
+import { TaskPosition } from "../../ports/TaskPosition";
 
 export class InMemoryTaskRepository implements TaskRepository {
   tasks: Task[] = [];
@@ -9,15 +10,15 @@ export class InMemoryTaskRepository implements TaskRepository {
     return Promise.resolve(this.tasks);
   }
 
-  addTask(task: Task, position: "next" | "now" | "top") {
+  addTask(task: Task, position: TaskPosition) {
     const taskCopy = { ...task };
     taskCopy.id = `${this.idCounter++}`;
     if (position === "next") {
       this.tasks.splice(1, 0, taskCopy);
     } else if (position === "now") {
-      this.tasks.push(taskCopy);
-    } else if (position === "top") {
       this.tasks.unshift(taskCopy);
+    } else if (position === "last") {
+      this.tasks.push(taskCopy);
     }
     return Promise.resolve(taskCopy);
   }
@@ -66,7 +67,7 @@ export class InMemoryTaskRepository implements TaskRepository {
       return Promise.reject(`Task ${id} not found`);
     }
     const [task] = this.tasks.splice(index, 1);
-    this.tasks.push(task);
+    this.tasks.unshift(task);
     return Promise.resolve();
   }
 }

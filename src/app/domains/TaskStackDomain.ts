@@ -1,8 +1,9 @@
 import { TaskRepository } from "../repositories/TaskRepository";
-import { ToDoTabDomainPort } from "./ToDoTabDomain";
+import { ToDoTabDomainPort } from "../views/ToDoTabDomain";
 import { EventRepository } from "../repositories/EventRepository";
 import { Event } from "../models/Event";
 import { Task } from "../models/Task";
+import { TaskPosition } from "../ports/TaskPosition";
 
 export class TaskStackDomain implements ToDoTabDomainPort {
   taskRepository: TaskRepository;
@@ -20,12 +21,12 @@ export class TaskStackDomain implements ToDoTabDomainPort {
     return this.taskRepository.listTasks();
   }
 
-  addTask(task: Task, position: "top" | "next" | "now") {
+  addTask(task: Task, position: TaskPosition) {
     return this.taskRepository.addTask(task, position);
   }
 
   reorderTask(task: Task, direction: "up" | "down"): Promise<void> {
-    const offset = direction === "up" ? 1 : -1;
+    const offset = direction === "up" ? -1 : 1;
     return this.taskRepository.reorderTask(task.id, offset);
   }
 
