@@ -1,9 +1,8 @@
 import { Task } from "../models/Task";
-import { TaskPosition } from "../ports/TaskPosition";
 
 export interface TaskRepository {
   listTasks(): Promise<Task[]>;
-  addTask(task: Task, position: TaskPosition): Promise<Task>;
+  addTask(task: Task, position: "now" | "next" | "top"): Promise<Task>;
   getTask(id: string): Promise<Task>;
   updateTask(id: string, newValues: Task): Promise<void>;
   deleteTask(id: string): Promise<void>;
