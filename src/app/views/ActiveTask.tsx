@@ -60,14 +60,14 @@ export function ActiveTask({
       <div style={styles.rightSide}>
         {time}
         {timerIsRunning ? (
-          <button onClick={() => adapter.handleTimerStop()}>Pause</button>
+          <button onClick={() => adapter.handleTimerStop()}>⏸</button>
         ) : (
           <button
             onClick={() => {
               adapter.handleTimerStart();
             }}
           >
-            Start
+            ▶️
           </button>
         )}
       </div>

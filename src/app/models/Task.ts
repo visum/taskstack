@@ -24,16 +24,16 @@ export class Task {
     let hours = 0;
     let minutes = 0;
 
-    if (seconds > SECONDS_IN_DAY) {
+    if (seconds >= SECONDS_IN_DAY) {
       days = Math.floor(seconds / SECONDS_IN_DAY);
       seconds = seconds - days * SECONDS_IN_DAY;
     }
 
-    if (seconds > SECONDS_IN_HOUR) {
+    if (seconds >= SECONDS_IN_HOUR) {
       hours = Math.floor(seconds / SECONDS_IN_HOUR);
       seconds = seconds - hours * SECONDS_IN_HOUR;
     }
-    if (seconds > 60) {
+    if (seconds >= 60) {
       minutes = Math.floor(seconds / 60);
       seconds = seconds - minutes * 60;
     }
