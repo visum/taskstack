@@ -117,7 +117,9 @@ export class ToDoTabDomain
 
   activateTask(task: Task): void {
     this.adapter.activateTask(task).then(() => {
-      this.updateTaskList();
+      this.updateTaskList().then(() => {
+        this.activeTaskDomain.getValue()?.handleTimerStart();
+      });
     });
   }
 
