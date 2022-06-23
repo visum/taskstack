@@ -47,8 +47,14 @@ export class ToDoTabDomain
     const tasks = [...(await this.adapter.getTasks())];
     const activeItem = tasks.shift();
     if (activeItem) {
-      this.activeTask = activeItem;
-      this.activeTaskDomain.setValue(new ActiveTaskDomain(activeItem, this));
+      if (this.activeTask?.id !== activeItem.id) {
+        const activeTaskDomain = this.activeTaskDomain.getValue();
+        if (activeTaskDomain) {
+          activeTaskDomain.handleTimerStop();
+        }
+        this.activeTask = activeItem;
+        this.activeTaskDomain.setValue(new ActiveTaskDomain(activeItem, this));
+      }
     }
     this.taskListDomain.updateList(tasks);
   }
