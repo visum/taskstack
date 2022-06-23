@@ -49,6 +49,12 @@ export class ToDoTabDomain
     if (activeItem) {
       if (this.activeTask?.id !== activeItem.id) {
         const activeTaskDomain = this.activeTaskDomain.getValue();
+        const event: Event = {
+          type: EventType.SWITCH,
+          time: Date.now(),
+          taskId: activeItem.id,
+        };
+        this.adapter.addEvent(event);
         if (activeTaskDomain) {
           activeTaskDomain.handleTimerStop();
         }
@@ -65,11 +71,13 @@ export class ToDoTabDomain
       this.updateTaskList();
     });
   }
+
   completeTask(task: Task) {
     this.adapter.completeTask(task).then(() => {
       this.updateTaskList();
     });
   }
+
   startTimer(): void {
     if (!this.activeTask) {
       return;
@@ -82,17 +90,31 @@ export class ToDoTabDomain
     this.adapter.addEvent(event);
   }
 
+  stopTimer(): void {
+    if (!this.activeTask) {
+      return;
+    }
+    const event: Event = {
+      type: EventType.STOP,
+      time: Date.now(),
+      taskId: this.activeTask.id,
+    };
+    this.adapter.addEvent(event);
+  }
+
   // TaskItemDomainPort
   reorderTaskUp(task: Task): void {
     this.adapter.reorderTask(task, "up").then(() => {
       this.updateTaskList();
     });
   }
+
   reorderTaskDown(task: Task): void {
     this.adapter.reorderTask(task, "down").then(() => {
       this.updateTaskList();
     });
   }
+
   activateTask(task: Task): void {
     this.adapter.activateTask(task).then(() => {
       this.updateTaskList();

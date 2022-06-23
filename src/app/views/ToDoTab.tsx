@@ -13,12 +13,11 @@ export interface ToDoTabViewPort {
 
 export function ToDoTab({
   adapter,
-  style = {}
+  style = {},
 }: {
   adapter: ToDoTabViewPort;
   style?: React.CSSProperties;
 }) {
-  // const taskListDomain = useAsyncValue(adapter.taskListDomain);
   const taskListDomain = adapter.taskListDomain;
   const activeTaskDomain = useAsyncValue(adapter.activeTaskDomain);
   const taskFormDomain = useAsyncValue(adapter.taskFormDomain);
@@ -30,4 +29,11 @@ export function ToDoTab({
       {taskFormDomain && <TaskForm adapter={taskFormDomain} />}
     </div>
   );
+}
+
+export function getToDoTab(
+  adapter: ToDoTabViewPort,
+  style: React.CSSProperties = {}
+) {
+  return <ToDoTab adapter={adapter} style={style} />;
 }

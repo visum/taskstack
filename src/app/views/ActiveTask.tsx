@@ -55,7 +55,7 @@ export function ActiveTask({
           {link}
         </a>
         <br />
-        <button onClick={() => adapter.handleComplete()}>Complete</button>
+        {/* <button onClick={() => adapter.handleComplete()}>Complete</button> */}
       </div>
       <div style={styles.rightSide}>
         {time}

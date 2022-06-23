@@ -19,4 +19,5 @@ export class InMemoryEventRepository implements EventRepository {
     );
     return Promise.resolve(events);
   }
+
 }

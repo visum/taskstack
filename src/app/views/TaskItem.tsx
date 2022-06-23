@@ -10,10 +10,10 @@ const styles: Record<string, React.CSSProperties> = {
     borderTop: '1px solid rgba(0,0,0,0.6)'
   },
   leftSide: {
-    flex: "2 2 auto",
+    flex: "1 1 70%",
   },
   rightSide: {
-    flex: "1 1 auto",
+    flex: "1 1 30%",
   },
 };
 

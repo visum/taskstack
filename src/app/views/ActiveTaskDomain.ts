@@ -2,12 +2,11 @@ import { ObservableValue } from "../../lib/ObservableValue";
 import { Task } from "../models/Task";
 import { ActiveTaskViewPort } from "./ActiveTask";
 
-
-
 export interface ActiveTaskDomainPort {
   updateTask(task: Task, newValues: Task): void;
   completeTask(task: Task): void;
   startTimer(): void;
+  stopTimer(): void;
 }
 
 export class ActiveTaskDomain implements ActiveTaskViewPort {
@@ -62,6 +61,7 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
     this.time.setValue(Task.formatTime(this.task.totalTime));
     this.adapter.updateTask(this.task, this.task);
     window.clearInterval(this.timerUpdateInterval);
+    this.adapter.stopTimer();
   }
 
   handleUpdateLink: () => void;

@@ -25,6 +25,7 @@ const styles: Record<string, React.CSSProperties> = {
 export interface Tab {
   title: string;
   getContents: () => React.ReactElement;
+  onActivate?: () => void;
 }
 
 export interface TabsViewPort {
