@@ -53,6 +53,9 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
   }
 
   handleTimerStop() {
+    if(!this.timerIsRunning.getValue()){
+      return;
+    }
     const elapsed = Date.now() - this.startTime;
     this.task.totalTime += elapsed;
     this.timerIsRunning.setValue(false);

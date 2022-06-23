@@ -14,8 +14,7 @@ export class TaskListDomain implements TaskListViewPort {
   }
 
   updateList(tasks: Task[]) {
-    const adapter = this.adapter;
-    const domains = tasks.map((task) => new TaskItemDomain(task, adapter));
+    const domains = tasks.map((task) => new TaskItemDomain(task, this.adapter));
     this.tasks.setValue(domains);
   }
 }
