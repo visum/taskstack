@@ -2,29 +2,85 @@ import { ObservableValue } from "../../lib/ObservableValue";
 import { Task } from "../models/Task";
 import { Event, EventType } from "../models/Event";
 import { ReportTabViewPort, TaskInterval } from "./ReportTab";
+import { Day } from "../ports/Day";
 
 export interface ReportTabDomainPort {
   getTasks: () => Promise<Task[]>;
-  getEvents: () => Promise<Event[]>;
+  getEvents: (start: number, end: number) => Promise<Event[]>;
 }
+
+const MS_IN_DAY = 86_400_000;
 
 export class ReportTabDomain implements ReportTabViewPort {
   totalTasks: ObservableValue<number> = new ObservableValue(0);
   totalTime: ObservableValue<number> = new ObservableValue(0);
   totalChanges: ObservableValue<number> = new ObservableValue(0);
+  day: ObservableValue<Day>;
   intervals = new ObservableValue<TaskInterval[]>([]);
 
   private adapter: ReportTabDomainPort;
 
   constructor(adapter: ReportTabDomainPort) {
     this.adapter = adapter;
+    this.day = new ObservableValue(this.getToday());
+
+    this.day.onChange(() => {
+      this.update();
+    });
+
     this.update();
   }
 
   update() {
-    Promise.all([this.adapter.getEvents(), this.adapter.getTasks()]).then(
-      ([events, tasks]) => this.generateReport(events, tasks)
-    );
+    const reportDay = this.day.getValue();
+    const startTimestamp = this.dayToTimestamp(reportDay);
+    const endTimesatmp = startTimestamp + MS_IN_DAY;
+
+    Promise.all([
+      this.adapter.getEvents(startTimestamp, endTimesatmp),
+      this.adapter.getTasks(),
+    ]).then(([events, tasks]) => this.generateReport(events, tasks));
+  }
+
+  handleSelectNextDay() {
+    const day = this.day.getValue();
+    const timestamp = this.dayToTimestamp(day);
+    const parsed = new Date(timestamp + MS_IN_DAY);
+    const newDay = {
+      year: parsed.getFullYear(),
+      month: parsed.getMonth() + 1,
+      day: parsed.getDate(),
+    };
+    this.day.setValue(newDay);
+  }
+
+  handleSelectToday(): void {
+    this.day.setValue(this.getToday());
+  }
+
+  handleSelectPreviousDay(): void {
+    const day = this.day.getValue();
+    const timestamp = this.dayToTimestamp(day);
+    const parsed = new Date(timestamp - MS_IN_DAY);
+    const newDay = {
+      year: parsed.getFullYear(),
+      month: parsed.getMonth() + 1,
+      day: parsed.getDate(),
+    };
+    this.day.setValue(newDay);
+  }
+
+  private getToday(): Day {
+    const today = new Date();
+    return {
+      year: today.getFullYear(),
+      month: today.getMonth() + 1,
+      day: today.getDate(),
+    };
+  }
+
+  private dayToTimestamp(day: Day) {
+    return Date.parse(`${day.year}-${day.month}-${day.day}`);
   }
 
   private generateReport(events: Event[], tasks: Task[]) {

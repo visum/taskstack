@@ -16,8 +16,8 @@ export class ReportTabDomainAdapter implements ReportTabDomainPort {
     this.taskRepository = taskRepository;
   }
 
-  getEvents(): Promise<Event[]> {
-    return this.eventRepository.listEvents();
+  getEvents(start: number, end: number): Promise<Event[]> {
+    return this.eventRepository.getEventsForRange(start, end);
   }
 
   getTasks(): Promise<Task[]> {
