@@ -38,6 +38,7 @@ export class TaskFormDomain implements TaskFormViewPort {
       isComplete: false,
     };
     this.adapter.addTask(task, position);
+    this.isValid.setValue(false);
     this.name.setValue("");
     this.link.setValue("");
   }

@@ -21,6 +21,6 @@ export class ReportTabDomainAdapter implements ReportTabDomainPort {
   }
 
   getTasks(): Promise<Task[]> {
-    return this.taskRepository.listTasks();
+    return this.taskRepository.listTasks(true);
   }
 }

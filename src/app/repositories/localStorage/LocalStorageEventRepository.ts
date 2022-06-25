@@ -47,4 +47,10 @@ export class LocalStorageEventRepository implements EventRepository {
     );
     return Promise.resolve(events);
   }
+
+  empty(): Promise<void> {
+    window.localStorage.removeItem(this.getStorageKey());
+    this.load();
+    return Promise.resolve();
+  }
 }

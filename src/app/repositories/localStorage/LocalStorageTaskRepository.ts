@@ -46,8 +46,11 @@ export class LocalStorageTaskRepository implements TaskRepository {
     );
   }
 
-  listTasks(): Promise<Task[]> {
-    return Promise.resolve(this.tasks);
+  listTasks(includeComplete: boolean): Promise<Task[]> {
+    const result = this.tasks.filter(
+      (task) => !task.isComplete || task.isComplete === includeComplete
+    );
+    return Promise.resolve(result);
   }
 
   addTask(task: Task, position: TaskPosition): Promise<Task> {
@@ -113,6 +116,13 @@ export class LocalStorageTaskRepository implements TaskRepository {
     const [task] = this.tasks.splice(index, 1);
     this.tasks.unshift(task);
     this.save();
+    return Promise.resolve();
+  }
+
+  empty(): Promise<void> {
+    window.localStorage.removeItem(this.getStorageKey());
+    window.localStorage.removeItem(this.getStorageKey() + "_id");
+    this.load();
     return Promise.resolve();
   }
 }

@@ -68,7 +68,7 @@ export function TaskForm({
       </div>
       <div style={styles.rightSide}>
         <button onClick={() => adapter.handleAdd("last")} disabled={!isValid}>
-          Last (Enter)
+          Add (Enter)
         </button>
         <button onClick={() => adapter.handleAdd("next")} disabled={!isValid}>
           Next (Shift + Enter)
