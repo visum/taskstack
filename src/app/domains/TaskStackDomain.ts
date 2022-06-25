@@ -18,7 +18,7 @@ export class TaskStackDomain implements ToDoTabDomainPort {
   }
 
   getTasks(): Promise<Task[]> {
-    return this.taskRepository.listTasks();
+    return this.taskRepository.listTasks(false);
   }
 
   addTask(task: Task, position: TaskPosition) {

@@ -6,8 +6,11 @@ export class InMemoryTaskRepository implements TaskRepository {
   tasks: Task[] = [];
   private idCounter = 0;
 
-  listTasks(): Promise<Task[]> {
-    return Promise.resolve(this.tasks);
+  listTasks(includeComplete: boolean): Promise<Task[]> {
+    const result = this.tasks.filter(
+      (task) => !task.isComplete || task.isComplete === includeComplete
+    );
+    return Promise.resolve(result);
   }
 
   addTask(task: Task, position: TaskPosition) {
@@ -68,6 +71,12 @@ export class InMemoryTaskRepository implements TaskRepository {
     }
     const [task] = this.tasks.splice(index, 1);
     this.tasks.unshift(task);
+    return Promise.resolve();
+  }
+
+  empty() {
+    this.tasks.length = 0;
+    this.idCounter = 0;  
     return Promise.resolve();
   }
 }

@@ -11,6 +11,8 @@ import { Tabs, Tab } from "./app/views/Tabs";
 import { TabsDomain } from "./app/views/TabsDomain";
 import { ReportTabDomain } from "./app/views/ReportTabDomain";
 import { ReportTabDomainAdapter } from "./app/domains/ReportTabDomainAdapter";
+import { UtiliesTabDomain } from "./app/views/UtilitiesTabDomain";
+import { getUtilitiesTab } from "./app/views/UtilitiesTab";
 
 import "./styles.css";
 
@@ -20,6 +22,7 @@ export default function App() {
     const events = new LocalStorageEventRepository();
     const taskStackDomain = new TaskStackDomain(tasks, events);
     const toDoTabDomain = new ToDoTabDomain(taskStackDomain);
+    const utilitiesTabDomain = new UtiliesTabDomain(tasks, events);
     const reportTabDomain = new ReportTabDomain(
       new ReportTabDomainAdapter(tasks, events)
     );
@@ -28,11 +31,16 @@ export default function App() {
       {
         title: "ToDo",
         getContents: () => getToDoTab(toDoTabDomain),
+        onActivate: () => toDoTabDomain.update(),
       },
       {
         title: "Report",
         getContents: () => getReport(reportTabDomain),
         onActivate: () => reportTabDomain.update(),
+      },
+      {
+        title: "Utilities",
+        getContents: () => getUtilitiesTab(utilitiesTabDomain),
       },
     ];
 

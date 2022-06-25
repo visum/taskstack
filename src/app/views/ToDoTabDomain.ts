@@ -62,7 +62,14 @@ export class ToDoTabDomain
         this.activeTaskDomain.setValue(new ActiveTaskDomain(activeItem, this));
       }
     }
+    if (!activeItem && this.activeTaskDomain.getValue() != null) {
+      this.activeTaskDomain.setValue(null);
+    }
     this.taskListDomain.updateList(tasks);
+  }
+
+  update() {
+    this.updateTaskList();
   }
 
   // ActiveTaskDomainPort
@@ -73,6 +80,9 @@ export class ToDoTabDomain
   }
 
   completeTask(task: Task) {
+    if (this.activeTask && this.activeTask.id === task.id) {
+      this.stopTimer();
+    }
     this.adapter.completeTask(task).then(() => {
       this.updateTaskList();
     });
