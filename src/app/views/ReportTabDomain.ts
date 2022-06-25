@@ -31,6 +31,18 @@ export class ReportTabDomain implements ReportTabViewPort {
     this.update();
   }
 
+  private changeDay(days: number) {
+    const day = this.day.getValue();
+    const date = this.dayToDate(day);
+    date.setDate(date.getDate() + days);
+    const newDay = {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+    };
+    this.day.setValue(newDay);
+  }
+
   update() {
     const reportDay = this.day.getValue();
     const startTimestamp = this.dayToTimestamp(reportDay);
@@ -43,15 +55,7 @@ export class ReportTabDomain implements ReportTabViewPort {
   }
 
   handleSelectNextDay() {
-    const day = this.day.getValue();
-    const timestamp = this.dayToTimestamp(day);
-    const parsed = new Date(timestamp + MS_IN_DAY);
-    const newDay = {
-      year: parsed.getFullYear(),
-      month: parsed.getMonth() + 1,
-      day: parsed.getDate(),
-    };
-    this.day.setValue(newDay);
+    this.changeDay(1);
   }
 
   handleSelectToday(): void {
@@ -59,15 +63,7 @@ export class ReportTabDomain implements ReportTabViewPort {
   }
 
   handleSelectPreviousDay(): void {
-    const day = this.day.getValue();
-    const timestamp = this.dayToTimestamp(day);
-    const parsed = new Date(timestamp - MS_IN_DAY);
-    const newDay = {
-      year: parsed.getFullYear(),
-      month: parsed.getMonth() + 1,
-      day: parsed.getDate(),
-    };
-    this.day.setValue(newDay);
+    this.changeDay(-1);
   }
 
   private getToday(): Day {
@@ -80,7 +76,11 @@ export class ReportTabDomain implements ReportTabViewPort {
   }
 
   private dayToTimestamp(day: Day) {
-    return Date.parse(`${day.year}-${day.month}-${day.day}`);
+    return this.dayToDate(day).getTime();
+  }
+
+  private dayToDate(day: Day) {
+    return new Date(`${day.year}-${day.month}-${day.day}`);
   }
 
   private generateReport(events: Event[], tasks: Task[]) {
