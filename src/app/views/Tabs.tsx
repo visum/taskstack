@@ -1,6 +1,6 @@
 import React from "react";
-import { ObservableValue } from "../../lib/ObservableValue";
-import { useAsyncValue } from "../../lib/useAsyncValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
+import { useAsyncValue } from "../../lib/hex/hooks/use_async_value";
 
 const styles: Record<string, React.CSSProperties> = {
   tabs: {

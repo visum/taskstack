@@ -1,6 +1,6 @@
 import React from "react";
 import { TaskItem, TaskItemViewPort } from "./TaskItem";
-import { ObservableValue } from "../../lib/ObservableValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
 
 export default {
   basic: () => {

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { ActiveTask, ActiveTaskViewPort } from "./ActiveTask";
-import { ObservableValue } from "../../lib/ObservableValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
 
 export default {
   basic: () => {

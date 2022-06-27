@@ -1,4 +1,4 @@
-import { ObservableValue } from "../../lib/ObservableValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
 import { Tab, TabsViewPort } from "./Tabs";
 
 export class TabsDomain implements TabsViewPort {

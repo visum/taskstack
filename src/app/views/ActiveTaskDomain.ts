@@ -1,4 +1,4 @@
-import { ObservableValue } from "../../lib/ObservableValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
 import { Task } from "../models/Task";
 import { ActiveTaskViewPort } from "./ActiveTask";
 

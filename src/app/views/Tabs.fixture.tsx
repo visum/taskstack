@@ -1,5 +1,5 @@
 import React from "react";
-import { ObservableValue } from "../../lib/ObservableValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
 import {Tab, Tabs, TabsViewPort} from "./Tabs";
 
 export default {

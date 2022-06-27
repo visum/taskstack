@@ -1,6 +1,6 @@
 import React from "react";
 import { TaskForm, TaskFormViewPort } from "./TaskForm";
-import { ObservableValue } from "../../lib/ObservableValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
 import { TaskPosition } from "../ports/TaskPosition";
 
 export default {
