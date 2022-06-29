@@ -23,6 +23,7 @@ export type TaskItemViewPort = {
   handleReorderUp: () => void;
   handleReorderDown: () => void;
   handleActivate: () => void;
+  handleComplete: () => void;
 };
 
 export function TaskItem({
@@ -50,9 +51,10 @@ export function TaskItem({
         {time}
       </div>
       <div style={styles.rightSide}>
-        <button onClick={() => adapter.handleReorderUp()}>Up</button>
-        <button onClick={() => adapter.handleReorderDown()}>Down</button>
-        <button onClick={() => adapter.handleActivate()}>Now</button>
+        <button onClick={() => adapter.handleComplete()}>✓</button>
+        <button onClick={() => adapter.handleReorderUp()}>⬆</button>
+        <button onClick={() => adapter.handleReorderDown()}>⬇</button>
+        <button onClick={() => adapter.handleActivate()}>▶️</button>
       </div>
     </div>
   );

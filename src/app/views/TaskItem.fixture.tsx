@@ -22,6 +22,9 @@ export default {
       handleActivate() {
         alert("My time is now!")
       },
+      handleComplete() {
+        alert("All done!");
+      }
     };
 
     return <TaskItem adapter={adapter} />

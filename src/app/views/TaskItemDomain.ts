@@ -6,6 +6,7 @@ export interface TaskItemDomainPort {
   reorderTaskUp(task: Task): void;
   reorderTaskDown(task: Task): void;
   activateTask(task: Task): void;
+  completeTask(task: Task): void;
 }
 
 export class TaskItemDomain implements TaskItemViewPort {
@@ -30,4 +31,8 @@ export class TaskItemDomain implements TaskItemViewPort {
   handleActivate() {
     this.adapter.activateTask(this.task);
   }
+
+  handleComplete(){
+    this.adapter.completeTask(this.task);
+  };
 }
