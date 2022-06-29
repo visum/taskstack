@@ -80,7 +80,7 @@ export class ReportTabDomain implements ReportTabViewPort {
   }
 
   private dayToDate(day: Day) {
-    return new Date(`${day.year}-${day.month}-${day.day}T00:00:00.000Z`);
+    return new Date(day.year, day.month - 1, day.day);
   }
 
   private generateReport(events: Event[], tasks: Task[]) {
