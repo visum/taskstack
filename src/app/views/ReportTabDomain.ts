@@ -1,7 +1,7 @@
 import { ObservableValue } from "../../lib/ObservableValue";
 import { Task } from "../models/Task";
 import { Event, EventType } from "../models/Event";
-import { ReportTabViewPort, TaskInterval } from "./ReportTab";
+import { ReportTabViewPort, TaskInterval, TaskTotalRecord } from "./ReportTab";
 import { Day } from "../ports/Day";
 
 export interface ReportTabDomainPort {
@@ -15,6 +15,7 @@ export class ReportTabDomain implements ReportTabViewPort {
   totalTasks: ObservableValue<number> = new ObservableValue(0);
   totalTime: ObservableValue<number> = new ObservableValue(0);
   totalChanges: ObservableValue<number> = new ObservableValue(0);
+  taskTotals: ObservableValue<TaskTotalRecord> = new ObservableValue({});
   day: ObservableValue<Day>;
   intervals = new ObservableValue<TaskInterval[]>([]);
 
@@ -85,20 +86,26 @@ export class ReportTabDomain implements ReportTabViewPort {
 
   private generateReport(events: Event[], tasks: Task[]) {
     const eventIds: string[] = [];
-    const totalTasks = events.reduce((accumulator, event) => {
+
+    const workedTasks = events.reduce<TaskTotalRecord>((accumulator, event) => {
       if (!eventIds.includes(event.taskId)) {
         eventIds.push(event.taskId);
-        return accumulator + 1;
+        const task = tasks.find((t) => t.id === event.taskId);
+        if (task) {
+          accumulator[task.id] = { task: task, total: 0 };
+        }
+        return accumulator;
       }
       return accumulator;
-    }, 0);
+    }, {});
+
     // TODO: there are some optimization opportunities here
     const tasksById: Record<string, Task> = {};
     tasks.forEach((task) => {
       tasksById[task.id] = task;
     });
 
-    this.totalTasks.setValue(totalTasks);
+    this.totalTasks.setValue(Object.keys(workedTasks).length);
 
     const switches = events.filter((e) => e.type === EventType.SWITCH).length;
     this.totalChanges.setValue(switches);
@@ -113,12 +120,14 @@ export class ReportTabDomain implements ReportTabViewPort {
         intervalStart = event.time;
       }
       if (event.type === EventType.STOP) {
+        const duration = event.time - intervalStart;
         intervals.push({
           task: tasksById[event.taskId],
           startTime: intervalStart,
           endTime: event.time,
-          duration: event.time - intervalStart,
+          duration,
         });
+        workedTasks[event.taskId].total += duration;
       }
     });
 
@@ -128,5 +137,6 @@ export class ReportTabDomain implements ReportTabViewPort {
 
     this.totalTime.setValue(totalTime);
     this.intervals.setValue(intervals);
+    this.taskTotals.setValue(workedTasks);
   }
 }

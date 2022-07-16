@@ -3,12 +3,15 @@ import { ObservableValue } from "../../lib/ObservableValue";
 import { useAsyncValue } from "../../lib/useAsyncValue";
 import { Task } from "../models/Task";
 import { Day } from "../ports/Day";
+import { formatTime } from "../lib/formatTime";
 
+export type TaskTotalRecord = Record<number, { task: Task; total: number }>;
 export interface ReportTabViewPort {
   totalTasks: ObservableValue<number>;
   totalTime: ObservableValue<number>;
   totalChanges: ObservableValue<number>;
   intervals: ObservableValue<TaskInterval[]>;
+  taskTotals: ObservableValue<TaskTotalRecord>;
   handleSelectNextDay(): void;
   handleSelectPreviousDay(): void;
   handleSelectToday(): void;
@@ -36,6 +39,7 @@ export function ReportTab({
   const totalTasks = useAsyncValue(adapter.totalTasks);
   const totalTime = useAsyncValue(adapter.totalTime);
   const totalChanges = useAsyncValue(adapter.totalChanges);
+  const dailyTotals = useAsyncValue(adapter.taskTotals);
   const day = useAsyncValue(adapter.day);
   const intervals = useAsyncValue(adapter.intervals);
 
@@ -52,12 +56,12 @@ export function ReportTab({
       <table>
         <tbody>
           <tr>
-            <td>Tasks</td>
-            <td>{totalTasks}</td>
+            <td>Total Time</td>
+            <td>{formatTime(totalTime)}</td>
           </tr>
           <tr>
-            <td>Time</td>
-            <td>{Task.formatTime(totalTime)}</td>
+            <td>Tasks Worked</td>
+            <td>{totalTasks}</td>
           </tr>
           <tr>
             <td>Changes</td>
@@ -65,6 +69,15 @@ export function ReportTab({
           </tr>
         </tbody>
       </table>
+      <h3>Tasks</h3>
+      <tbody>
+        {Object.values(dailyTotals).map(({ task, total }) => (
+          <tr key={task.id}>
+            <td>{task.name}</td>
+            <td>{formatTime(total)}</td>
+          </tr>
+        ))}
+      </tbody>
       <h3>Intervals</h3>
       <table>
         <thead>
@@ -77,7 +90,7 @@ export function ReportTab({
           {intervals.map((interval, index) => (
             <tr key={index}>
               <td>{interval.task.name}</td>
-              <td>{Task.formatTime(interval.duration)}</td>
+              <td>{formatTime(interval.duration)}</td>
             </tr>
           ))}
         </tbody>
