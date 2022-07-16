@@ -4,6 +4,7 @@ import { useAsyncValue } from "../../lib/useAsyncValue";
 import { Task } from "../models/Task";
 import { Day } from "../ports/Day";
 import { formatTime } from "../lib/formatTime";
+import { DayChart } from "../components/DayChart";
 
 export type TaskTotalRecord = Record<number, { task: Task; total: number }>;
 export interface ReportTabViewPort {
@@ -45,6 +46,12 @@ export function ReportTab({
 
   const dayFormatted = `${day.year}-${day.month}-${day.day}`;
 
+  // midnight + 6 hours, or 6 am
+  const startTime =
+    new Date(day.year, day.month - 1, day.day).getTime() + 6 * 60 * 60 * 1000;
+  // 6 am + 16 hours, or 10 pm
+  const endTime = startTime + 16 * 60 * 60 * 1000;
+
   return (
     <div style={{ ...styles.reportRoot, ...style }}>
       <div>Report for {dayFormatted}</div>
@@ -70,14 +77,16 @@ export function ReportTab({
         </tbody>
       </table>
       <h3>Tasks</h3>
-      <tbody>
-        {Object.values(dailyTotals).map(({ task, total }) => (
-          <tr key={task.id}>
-            <td>{task.name}</td>
-            <td>{formatTime(total)}</td>
-          </tr>
-        ))}
-      </tbody>
+      <table>
+        <tbody>
+          {Object.values(dailyTotals).map(({ task, total }) => (
+            <tr key={task.id}>
+              <td>{task.name}</td>
+              <td>{formatTime(total)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <h3>Intervals</h3>
       <table>
         <thead>
@@ -95,6 +104,12 @@ export function ReportTab({
           ))}
         </tbody>
       </table>
+      <DayChart
+        style={{ width: "600px", height: "100px" }}
+        intervals={intervals}
+        startTime={startTime}
+        endTime={endTime}
+      />
     </div>
   );
 }
