@@ -1,26 +1,22 @@
 import { Task } from "../models/Task";
 import { Event } from "../models/Event";
 import { ReportTabDomainPort } from "../views/ReportTabDomain";
-import { EventRepository } from "../repositories/EventRepository";
-import { TaskRepository } from "../repositories/TaskRepository";
+import { DataStore } from "../repositories/DataStore";
 
 export class ReportTabDomainAdapter implements ReportTabDomainPort {
-  eventRepository: EventRepository;
-  taskRepository: TaskRepository;
+  dataStore: DataStore;
 
-  constructor(
-    taskRepository: TaskRepository,
-    eventRepository: EventRepository
-  ) {
-    this.eventRepository = eventRepository;
-    this.taskRepository = taskRepository;
+  constructor(dataStore: DataStore) {
+    this.dataStore = dataStore;
   }
 
-  getEvents(start: number, end: number): Promise<Event[]> {
-    return this.eventRepository.getEventsForRange(start, end);
+  async getEvents(start: number, end: number): Promise<Event[]> {
+    const eventRepository = await this.dataStore.getEventRepository();
+    return eventRepository.getEventsForRange(start, end);
   }
 
-  getTasks(): Promise<Task[]> {
-    return this.taskRepository.listTasks(true);
+  async getTasks(): Promise<Task[]> {
+    const taskRepository = await this.dataStore.getTaskRepository();
+    return taskRepository.listTasks(true);
   }
 }

@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { getToDoTab } from "./app/views/ToDoTab";
-// import { InMemoryTaskRepository } from "./app/repositories/inMemory/InMemoryTaskRepository";
-// import { InMemoryEventRepository } from "./app/repositories/inMemory/InMemoryEventRepository";
-import { LocalStorageEventRepository } from "./app/repositories/localStorage/LocalStorageEventRepository";
-import { LocalStorageTaskRepository } from "./app/repositories/localStorage/LocalStorageTaskRepository";
+// import { LocalStorageDataStore } from "./app/repositories/localStorage/LocalStorageDataStore";
+import { IndexedDBDataStore } from "./app/repositories/indexedDB/IndexedDBDataStore";
 import { TaskStackDomain } from "./app/domains/TaskStackDomain";
 import { ToDoTabDomain } from "./app/views/ToDoTabDomain";
 import { getReport } from "./app/views/ReportTab";
@@ -18,13 +16,13 @@ import "./styles.css";
 
 export default function App() {
   const [tabsDomain] = useState(() => {
-    const tasks = new LocalStorageTaskRepository();
-    const events = new LocalStorageEventRepository();
-    const taskStackDomain = new TaskStackDomain(tasks, events);
+    // const dataStore = new LocalStorageDataStore();
+    const dataStore = new IndexedDBDataStore();
+    const taskStackDomain = new TaskStackDomain(dataStore);
     const toDoTabDomain = new ToDoTabDomain(taskStackDomain);
-    const utilitiesTabDomain = new UtiliesTabDomain(tasks, events);
+    const utilitiesTabDomain = new UtiliesTabDomain(dataStore);
     const reportTabDomain = new ReportTabDomain(
-      new ReportTabDomainAdapter(tasks, events)
+      new ReportTabDomainAdapter(dataStore)
     );
 
     const tabs: Tab[] = [

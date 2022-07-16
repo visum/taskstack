@@ -1,28 +1,23 @@
 import { UtilitiesTabPort } from "./UtilitiesTab";
-import { TaskRepository } from "../repositories/TaskRepository";
-import { EventRepository } from "../repositories/EventRepository";
+import { DataStore } from "../repositories/DataStore";
 
 export interface UtilitiesTabDomainPort {
-  taskRepository: TaskRepository;
-  eventRepository: EventRepository;
+  dataStore: DataStore;
 }
 
 export class UtiliesTabDomain implements UtilitiesTabPort {
-  taskRepository: TaskRepository;
-  eventRepository: EventRepository;
+  dataStore: DataStore;
 
-  constructor(
-    taskRepository: TaskRepository,
-    eventRepository: EventRepository
-  ) {
-    this.taskRepository = taskRepository;
-    this.eventRepository = eventRepository;
+  constructor(dataStore: DataStore) {
+    this.dataStore = dataStore;
   }
 
-  clearData(): Promise<void> {
+  async clearData(): Promise<void> {
+    const taskRepository = await this.dataStore.getTaskRepository();
+    const eventRepository = await this.dataStore.getEventRepository();
     return Promise.all([
-      this.taskRepository.empty(),
-      this.eventRepository.empty(),
+      taskRepository.empty(),
+      eventRepository.empty(),
     ]).then();
   }
 }
