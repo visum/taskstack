@@ -1,6 +1,7 @@
 import { ObservableValue } from "../../lib/ObservableValue";
 import { Task } from "../models/Task";
 import { ActiveTaskViewPort } from "./ActiveTask";
+import { formatTime } from "../lib/formatTime";
 
 export interface ActiveTaskDomainPort {
   updateTask(task: Task, newValues: Task): void;
@@ -29,7 +30,7 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
 
     this.name.setValue(task.name);
     this.link.setValue(task.link);
-    this.time.setValue(Task.formatTime(task.totalTime));
+    this.time.setValue(formatTime(task.totalTime));
   }
 
 
@@ -48,7 +49,7 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
 
   private updateTimer() {
     const elapsed = Date.now() - this.startTime;
-    this.time.setValue(Task.formatTime(this.task.totalTime + elapsed));
+    this.time.setValue(formatTime(this.task.totalTime + elapsed));
   }
 
   handleTimerStop() {
@@ -58,7 +59,7 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
     const elapsed = Date.now() - this.startTime;
     this.task.totalTime += elapsed;
     this.timerIsRunning.setValue(false);
-    this.time.setValue(Task.formatTime(this.task.totalTime));
+    this.time.setValue(formatTime(this.task.totalTime));
     this.adapter.updateTask(this.task, this.task);
     window.clearInterval(this.timerUpdateInterval);
     this.adapter.stopTimer();
