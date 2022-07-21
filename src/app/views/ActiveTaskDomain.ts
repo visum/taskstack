@@ -2,8 +2,10 @@ import { ObservableValue } from "../../lib/hex/observable_value";
 import { Task } from "../models/Task";
 import { ActiveTaskViewPort } from "./ActiveTask";
 import { formatTime } from "../lib/formatTime";
+import { TaskDetailDomain, TaskDetailDomainPort } from "./TaskDetailDomain";
 
 export interface ActiveTaskDomainPort {
+  taskDetailAdapter: TaskDetailDomainPort;
   updateTask(task: Task, newValues: Task): void;
   completeTask(task: Task): void;
   startTimer(): void;
@@ -17,6 +19,8 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
   linkInEdit = new ObservableValue<boolean>(false);
   time = new ObservableValue<string>("00:00:00:00");
   timerIsRunning = new ObservableValue<boolean>(false);
+  taskDetailDomain = new ObservableValue<TaskDetailDomain | null>(null);
+  taskDetailDelegate: TaskDetailDomainPort;
 
   private task: Task;
   private adapter: ActiveTaskDomainPort;
@@ -31,8 +35,19 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
     this.name.setValue(task.name);
     this.link.setValue(task.link);
     this.time.setValue(formatTime(task.totalTime));
-  }
 
+    this.taskDetailDelegate = {
+      updateTask: async (task) => {
+        await this.adapter.taskDetailAdapter.updateTask(task);
+        this.name.setValue(task.name);
+        this.link.setValue(task.link);
+      },
+      updateEvent: (event) => this.adapter.taskDetailAdapter.updateEvent(event),
+      getEventsForTask: (task) =>
+        this.adapter.taskDetailAdapter.getEventsForTask(task),
+      onClose: () => this.handleCloseDetail(),
+    };
+  }
 
   handleComplete() {
     this.adapter.completeTask(this.task);
@@ -47,13 +62,8 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
     }, 1000);
   }
 
-  private updateTimer() {
-    const elapsed = Date.now() - this.startTime;
-    this.time.setValue(formatTime(this.task.totalTime + elapsed));
-  }
-
   handleTimerStop() {
-    if(!this.timerIsRunning.getValue()){
+    if (!this.timerIsRunning.getValue()) {
       return;
     }
     const elapsed = Date.now() - this.startTime;
@@ -65,8 +75,18 @@ export class ActiveTaskDomain implements ActiveTaskViewPort {
     this.adapter.stopTimer();
   }
 
-  handleUpdateLink: () => void;
-  handleUpdateName: () => void;
-  startNameEdit: () => void;
-  startLinkEdit: () => void;
+  handleShowDetail() {
+    this.taskDetailDomain.setValue(
+      new TaskDetailDomain(this.task, this.taskDetailDelegate)
+    );
+  }
+
+  handleCloseDetail() {
+    this.taskDetailDomain.setValue(null);
+  }
+
+  private updateTimer() {
+    const elapsed = Date.now() - this.startTime;
+    this.time.setValue(formatTime(this.task.totalTime + elapsed));
+  }
 }

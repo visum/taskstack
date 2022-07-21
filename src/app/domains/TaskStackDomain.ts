@@ -11,6 +11,17 @@ export class TaskStackDomain implements ToDoTabDomainPort {
     this.dataStore = dataStore;
   }
 
+  async getEventsForTask(task: Task): Promise<Event[]> {
+    const eventsRepository = await this.dataStore.getEventRepository();
+    const allEvents = await eventsRepository.listEvents();
+    return allEvents.filter((e) => e.taskId === task.id);
+  }
+
+  async updateEvent(event: Event): Promise<void> {
+    const eventsRepository = await this.dataStore.getEventRepository();
+    return eventsRepository.updateEvent(event.id, event);
+  }
+
   async getTasks(): Promise<Task[]> {
     const taskRepository = await this.dataStore.getTaskRepository();
     return taskRepository.listTasks(false);
@@ -46,6 +57,6 @@ export class TaskStackDomain implements ToDoTabDomainPort {
 
   async addEvent(event: Event): Promise<void> {
     const eventRepository = await this.dataStore.getEventRepository();
-    return eventRepository.addEvent(event);
+    return eventRepository.addEvent(event).then();
   }
 }

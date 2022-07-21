@@ -11,6 +11,7 @@ import { ReportTabDomain } from "./app/views/ReportTabDomain";
 import { ReportTabDomainAdapter } from "./app/domains/ReportTabDomainAdapter";
 import { UtiliesTabDomain } from "./app/views/UtilitiesTabDomain";
 import { getUtilitiesTab } from "./app/views/UtilitiesTab";
+import { ModalService } from "./app/components/ModalService";
 
 import "./styles.css";
 
@@ -47,7 +48,9 @@ export default function App() {
 
   return (
     <div className="App">
-      <Tabs adapter={tabsDomain} />
+      <ModalService>
+        <Tabs adapter={tabsDomain} />
+      </ModalService>
     </div>
   );
 }

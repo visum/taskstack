@@ -5,6 +5,7 @@ export enum EventType {
 }
 
 export class Event {
+  id: string;
   taskId: string;
   type: EventType;
   time: number;

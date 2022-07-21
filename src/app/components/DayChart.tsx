@@ -1,7 +1,17 @@
 import React, { useRef } from "react";
 import { TaskInterval } from "../views/ReportTab";
 
-const allColors = ["#02D1A2", "#02D1A2", "#1802D1", "#BB02D1", "#D10250"];
+const allColors = [
+  "#02D1A2",
+  "#02D1A2",
+  "#1802D1",
+  "#BB02D1",
+  "#D10250",
+  "#E7F2F8",
+  "#74BDCB",
+  "##FFA384",
+  "#EFE7BC",
+];
 
 function drawCanvas(
   container: HTMLDivElement,
