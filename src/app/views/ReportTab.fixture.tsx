@@ -1,6 +1,6 @@
 import React from "react";
 import { ReportTab, ReportTabViewPort, TaskTotalRecord } from "./ReportTab";
-import { ObservableValue } from "../../lib/ObservableValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
 import { TaskInterval } from "./ReportTab";
 import { Day } from "../ports/Day";
 

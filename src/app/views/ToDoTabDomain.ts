@@ -10,7 +10,7 @@ import { TaskItemDomainPort } from "./TaskItemDomain";
 import { TaskPosition } from "../ports/TaskPosition";
 import { Task } from "../models/Task";
 import { Event, EventType } from "../models/Event";
-import { ObservableValue } from "../../lib/ObservableValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
 
 export interface ToDoTabDomainPort {
   getTasks(): Promise<Task[]>;

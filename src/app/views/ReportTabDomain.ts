@@ -1,4 +1,4 @@
-import { ObservableValue } from "../../lib/ObservableValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
 import { Task } from "../models/Task";
 import { Event, EventType } from "../models/Event";
 import { ReportTabViewPort, TaskInterval, TaskTotalRecord } from "./ReportTab";

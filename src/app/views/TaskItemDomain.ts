@@ -1,4 +1,4 @@
-import { ObservableValue } from "../../lib/ObservableValue";
+import { ObservableValue } from "../../lib/hex/observable_value";
 import { Task } from "../models/Task";
 import { TaskItemViewPort } from "./TaskItem";
 import { formatTime } from "../lib/formatTime";
