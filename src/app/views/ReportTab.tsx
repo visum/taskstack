@@ -87,6 +87,12 @@ export function ReportTab({
           ))}
         </tbody>
       </table>
+      <DayChart
+        style={{ width: "600px", height: "100px" }}
+        intervals={intervals}
+        startTime={startTime}
+        endTime={endTime}
+      />
       <h3>Intervals</h3>
       <table>
         <thead>
@@ -104,12 +110,6 @@ export function ReportTab({
           ))}
         </tbody>
       </table>
-      <DayChart
-        style={{ width: "600px", height: "100px" }}
-        intervals={intervals}
-        startTime={startTime}
-        endTime={endTime}
-      />
     </div>
   );
 }

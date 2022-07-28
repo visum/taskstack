@@ -45,13 +45,51 @@ export class IndexedDBEventRepository implements EventRepository {
     });
   }
 
-  addEvent(event: Event): Promise<void> {
+  addEvent(event: Event): Promise<Event> {
     return new Promise(async (resolve, reject) => {
       const store = await this.getWriteStore();
-      const request = store.add(event);
+      const record = {
+        type: event.type,
+        time: event.time,
+        taskId: event.taskId,
+      };
+      const request = store.add(record);
+      request.onsuccess = () => {
+        const key = request.result;
+        resolve({ ...event, id: String(key) });
+      };
+      request.onerror = (event) => {
+        reject(event);
+      };
+    });
+  }
+
+  getEvent(id: string): Promise<Event> {
+    return new Promise(async (resolve, reject) => {
+      const store = await this.getReadStore();
+      const request = store.get(IDBKeyRange.only(parseInt(id, 10)));
+
+      request.onsuccess = () => {
+        const result = request.result as Event;
+        resolve(result);
+      };
+
+      request.onerror = (event) => {
+        reject(event);
+      };
+    });
+  }
+
+  updateEvent(id: string, newValues: Event): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      const store = await this.getWriteStore();
+      const record = { ...newValues, id: parseInt(id, 10) };
+      const request = store.put(record);
+
       request.onsuccess = () => {
         resolve();
       };
+
       request.onerror = (event) => {
         reject(event);
       };

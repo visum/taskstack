@@ -12,17 +12,17 @@ export default {
       linkInEdit: new ObservableValue(false),
       time: new ObservableValue("00:12:30:12"),
       timerIsRunning: new ObservableValue(false),
-      handleComplete: () => {},
+      handleComplete: () => { },
       handleTimerStart: function () {
         this.timerIsRunning.setValue(true);
       },
       handleTimerStop: function () {
         this.timerIsRunning.setValue(false);
       },
-      handleUpdateLink: () => {},
-      handleUpdateName: () => {},
-      startNameEdit: () => {},
-      startLinkEdit: () => {},
+      taskDetailDomain: new ObservableValue(null),
+      handleShowDetail: function (): void {
+        throw new Error("Function not implemented.");
+      }
     };
 
     return <ActiveTask adapter={adapter} />;

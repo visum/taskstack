@@ -11,6 +11,7 @@ import { TaskPosition } from "../ports/TaskPosition";
 import { Task } from "../models/Task";
 import { Event, EventType } from "../models/Event";
 import { ObservableValue } from "../../lib/hex/observable_value";
+import { TaskDetailDomainPort } from "./TaskDetailDomain";
 
 export interface ToDoTabDomainPort {
   getTasks(): Promise<Task[]>;
@@ -20,6 +21,8 @@ export interface ToDoTabDomainPort {
   updateTask(task: Task, newValues: Task): Promise<void>;
   completeTask(task: Task): Promise<void>;
   addEvent(event: Event): Promise<void>;
+  getEventsForTask(task:Task): Promise<Event[]>;
+  updateEvent(event: Event): Promise<void>;
 }
 
 export class ToDoTabDomain
@@ -30,18 +33,32 @@ export class ToDoTabDomain
     TaskItemDomainPort
 {
   adapter: ToDoTabDomainPort;
-  // taskListDomain: ObservableValue<TaskListViewPort>;
   taskListDomain: TaskListViewPort;
   activeTaskDomain = new ObservableValue<ActiveTaskViewPort | null>(null);
   taskFormDomain = new ObservableValue<TaskFormViewPort | null>(null);
   activeTask: Task | null = null;
+  taskDetailAdapter: TaskDetailDomainPort;
 
   constructor(adapter: ToDoTabDomainPort) {
     this.adapter = adapter;
     this.taskListDomain = new TaskListDomain([], this);
     this.taskFormDomain.setValue(new TaskFormDomain(this));
     this.updateTaskList();
+
+    this.taskDetailAdapter = {
+      updateTask:(task) => {
+        return this.adapter.updateTask(task, task);
+      },
+      getEventsForTask: (task) => {
+        return this.adapter.getEventsForTask(task);
+      },
+      updateEvent: (event) => {
+        return this.adapter.updateEvent(event);
+      },
+      onClose: () => {}
+    };
   }
+
 
   private async updateTaskList() {
     const tasks = [...(await this.adapter.getTasks())];
@@ -50,6 +67,7 @@ export class ToDoTabDomain
       if (this.activeTask?.id !== activeItem.id) {
         const activeTaskDomain = this.activeTaskDomain.getValue();
         const event: Event = {
+          id: "",
           type: EventType.SWITCH,
           time: Date.now(),
           taskId: activeItem.id,
@@ -93,6 +111,7 @@ export class ToDoTabDomain
       return;
     }
     const event: Event = {
+      id: "",
       type: EventType.START,
       time: Date.now(),
       taskId: this.activeTask.id,
@@ -105,6 +124,7 @@ export class ToDoTabDomain
       return;
     }
     const event: Event = {
+      id: "",
       type: EventType.STOP,
       time: Date.now(),
       taskId: this.activeTask.id,
