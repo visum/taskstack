@@ -1,5 +1,5 @@
 import { Task } from "../models/Task";
-import { Event } from "../models/Event";
+import { Event, EventType } from "../models/Event";
 import { ObservableValue } from "../../lib/hex/observable_value";
 import {
   TaskDetailEventDomain,
@@ -59,9 +59,10 @@ export class TaskDetailDomain {
 
   private loadEvents() {
     this.adapter.getEventsForTask(this.task).then((events) => {
-      this.events.setValue(events);
+      const filtered = events.filter(e => e.type !== EventType.SWITCH);
+      this.events.setValue(filtered);
       this.eventDetailDomains.setValue(
-        events.map(
+        filtered.map(
           (e) => new TaskDetailEventDomain(e, this.adapter)
         )
       );

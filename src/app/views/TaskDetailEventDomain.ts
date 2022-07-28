@@ -18,7 +18,7 @@ export class TaskDetailEventDomain {
 
   startEdit() {
     this.isInEdit.setValue(true);
-    this.timeValue.setValue(new Date(this.event.time).toISOString());
+    this.timeValue.setValue(new Date(this.event.time).toLocaleString());
   }
 
   stopEdit() {

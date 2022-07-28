@@ -4,8 +4,8 @@ import { EventType } from "../models/Event";
 import { TaskDetailEventDomain } from "./TaskDetailEventDomain";
 
 const typeToName: Record<EventType, string> = {
-  [EventType.START]: "Start",
-  [EventType.STOP]: "Stop",
+  [EventType.START]: "▶️",
+  [EventType.STOP]: "⏸",
   [EventType.SWITCH]: "Switch",
 };
 
